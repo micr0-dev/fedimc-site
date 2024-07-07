@@ -120,21 +120,43 @@ to invite a friend to the server, contact micr0 with their fedi account and vouc
             </p>
         </footer>
         <script>
-            function pingServer() {
+            function pingServer(callback) {
                 var startTime = Date.now();
 
                 fetch(window.location.href)
                     .then(response => {
                         var endTime = Date.now();
                         var ping = endTime - startTime;
-                        document.getElementById("ping").textContent = ping + "ms";
-                        console.log('Ping:', ping);
+                        callback(ping);
                     })
                     .catch(error => console.error('Error:', error));
             }
 
-            pingServer();
-            setInterval(pingServer, 1000);  // Ping the server every minute
+            function averagePing(pingTimes) {
+                var sum = pingTimes.reduce((a, b) => a + b, 0);
+                return sum / pingTimes.length;
+            }
+
+            function measurePing() {
+                var pingTimes = [];
+                var numPings = 5;
+                var interval = 2000; // 2 seconds
+
+                function recordPing(ping) {
+                    pingTimes.push(ping);
+                    if (pingTimes.length === numPings) {
+                        var avgPing = averagePing(pingTimes);
+                        document.getElementById("ping").textContent = avgPing.toFixed(2) + "ms";
+                    }
+                }
+
+                for (let i = 0; i < numPings; i++) {
+                    setTimeout(() => pingServer(recordPing), i * interval);
+                }
+            }
+
+            measurePing();
+            setInterval(measurePing, 5000);  // Ping the server every minute
         </script>
 </body>
 
