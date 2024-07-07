@@ -1,3 +1,10 @@
+@font-face {
+    font-family: 'Scintifica';
+    src: url('/fonts/scientifica.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
 body {
     font-family: 'Scintifica', monospace;
     background-color: #111;
