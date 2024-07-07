@@ -158,7 +158,7 @@ to invite a friend to the server, contact micr0 with their fedi account and vouc
             function pingServer(callback) {
                 var startTime = Date.now();
 
-                fetch('https://music.micr0.dev/api/ping')
+                fetch('https://mc.micr0.dev/api/ping')
                     .then(response => {
                         var endTime = Date.now();
                         var ping = endTime - startTime;
