@@ -71,7 +71,9 @@ to invite a friend to the server, contact micr0 with their fedi account and vouc
         <h2>Prism Launcher installation instructions</h2>
         <ol>
             <li>download and install the <a href="https://prismlauncher.org">Prism Launcher</a>.</li>
-            <li>download the modpack file from the <a href="https://modrinth.com/modpack/fedimc">Modrinth page</a>.
+            <li>download the modpack file from the <a href="https://modrinth.com/modpack/fedimc">Modrinth page</a>. (if
+                modrinth has not approved the pack yet you can also download it <a
+                    href="https://mc.micr0.dev/fedimc.mrpack">here</a>)
             </li>
             <li>open Prism Launcher and create a new instance.</li>
             <li>click on the 'Import' option and select the downloaded modpack <strong>.mrpack</strong> file.</li>
@@ -234,10 +236,8 @@ to invite a friend to the server, contact micr0 with their fedi account and vouc
                     });
             }
 
-            // Call the function immediately to fetch the data on page load
             fetchServerInfo();
 
-            // Optionally, refresh the info every minute
             setInterval(fetchServerInfo, 60000);
 
             document.querySelectorAll('h2').forEach(header => {
