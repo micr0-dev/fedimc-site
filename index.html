@@ -13,7 +13,7 @@
         <h1>fedimc</h1>
     </header>
     <section id="intro">
-        <h2>welcome to fedimc~</h2>
+        <h2>Welcome to fedimc~</h2>
         <p>welcome to the fedimc server! a community of cool fedi peeps having fun and playing mc. please follow the
             instructions below to set up your client and join the
             community :3</p>
@@ -41,6 +41,12 @@ to invite a friend to the server, contact micr0 with their fedi account and vouc
             and have fun! feel free to live with other people and form groups spawn may be used as a communal area for
             the whole server to use such as for shopping. if you have any questions or concerns, feel free to reach out
             to micr0 on fedi. have fun!~ :3
+        </p>
+    </section>
+    <section id="backups">
+        <h2>Backups</h2>
+        <p>backups are taken once a day at 02:00EST. the server does restart at this time, so please be aware of this
+            when playing. if you have any questions or concerns, feel free to reach out to micr0 on fedi. have fun!~ :3
         </p>
     </section>
     <section id="how-to-join">
@@ -78,9 +84,59 @@ to invite a friend to the server, contact micr0 with their fedi account and vouc
             <li>launch Minecraft with Fabric and connect to the server</li>
         </ol>
     </section>
-    <footer>
-        <p>for any questions, contact micr0 on fedi</p>
-    </footer>
+    <section id="server-ip">
+        <h2>Server IP</h2>
+        <p>the server ip is <strong>mc.micr0.dev</strong></p>
+    </section>
+    <section id="server-tech-details">
+        <h2>Server technical details</h2>
+        <p>the server is hosted on a private server with <a href="https://contabo.com/en-us/vps/">Contabo</a> and is
+            running 4 vCPU cores and 6gb of RAM. the server is located in United States (East) and your current ping to
+            it is
+            <strong id="ping">(NAN)ms</strong>. the server is connected through a 300mbps connection. running Rocky
+            Linux 9.4.
+    </section>
+    <section id="privacy-and-data-removal">
+        <h2>Privacy and data removal</h2>
+        <p>the server is hosted on a private server and does not collect any data other than playerdata collected by
+            minecraft. if you would like your data removed,
+            please contact micr0 on fedi. your data will be removed within 1 week of your request. (most likely faster)
+            thank you!~ :3
+        </p>
+    </section>
+    <section id="donations">
+        <h2>Donations</h2>
+        <p>if you would like to support the server, you can donate to help cover the servers costs. donations are not
+            required but are appreciated! you can donate the following methods:</p>
+        <p>ko-fi (normies):</p>
+        <a href="https://ko-fi.com/micr0byte" target="_blank" id="donate-button">Donate on Ko-fi</a>
+        <p>Monero (privacy enthusiasts):
+        <pre
+            id="monero-wallet">44j6qAHAsaVDcw3suRULVGW2t1i812kXCVneVybtcCjZ7jGK2XcBRESFFVAFSx2KWJGzNYKwhWAvwU7mJU4AWb3oRYWD6vD</pre>
+        </p>
+
+        <footer>
+            <p>for any questions, contact micr0 on fedi at <a href="https://wetdry.world/@micr0">@micr0@wetdry.world</a>
+            </p>
+        </footer>
+        <script>
+            function pingServer() {
+                var startTime = Date.now();
+
+                fetch(window.location.href)
+                    .then(response => {
+                        var endTime = Date.now();
+                        var ping = endTime - startTime;
+                        document.getElementById("ping").textContent = ping + "ms";
+                        console.log('Ping:', ping);
+                    })
+                    .catch(error => console.error('Error:', error));
+            }
+
+            pingServer();
+            setInterval(pingServer, 1000);  // Ping the server every minute
+        </script>
 </body>
+
 
 </html>
