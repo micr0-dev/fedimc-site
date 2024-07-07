@@ -18,6 +18,14 @@
             instructions below to set up your client and join the
             community :3</p>
     </section>
+    <section id="server-info">
+        <h2>Live server info</h2>
+        <img id="server-icon" style="display: none;" alt="Server Icon">
+        <p><strong id="server-motd">N/A</strong></p>
+        <p>Status: <strong id="server-status">Checking...</strong></p>
+        <p>Players: <strong id="server-players">N/A</strong></p>
+        <p>Online players: <strong id="active-players">N/A</strong></p>
+    </section>
     <section id="rules">
         <h2>Server rules</h2>
         <pre>
@@ -84,6 +92,31 @@ to invite a friend to the server, contact micr0 with their fedi account and vouc
             <li>launch Minecraft with Fabric and connect to the server</li>
         </ol>
     </section>
+    <section id="additional-mods">
+        <h2>Additional modifications</h2>
+        <p>if you would like to use additional quality of life or optimization mods, you can do that. however, please
+            keep in mind mods that give you an unfair advantage are not allowed. </p>
+        <p>here is an example of some mods that are allowed:</p>
+        <ul>
+            <li>Iris or any shaders</li>
+            <li>Inventory Tweaks</li>
+            <li>MiniHUD</li>
+            <li>litematica/schematica</li>
+            <li>Shulker Tooltip</li>
+            <li>AppleSkin</li>
+            <li>Mod Menu</li>
+            <li>Waila</li>
+        </ul>
+        <p>here is an example of some mods that are not allowed:</p>
+        <ul>
+            <li>X-Ray or other blatant cheats</li>
+            <li>AutoClickers</li>
+            <li>Minimaps</li>
+            <li>tweakaroo</li>
+            <li>Just Enough Items</li>
+        </ul>
+        <p>if you have any questions about a mod, feel free to reach out to micr0 on fedi. have fun!~ :3</p>
+    </section>
     <section id="server-ip">
         <h2>Server IP</h2>
         <p>the server ip is <strong>mc.micr0.dev</strong></p>
@@ -93,7 +126,7 @@ to invite a friend to the server, contact micr0 with their fedi account and vouc
         <p>the server is hosted on a private server with <a href="https://contabo.com/en-us/vps/">Contabo</a> and is
             running 4 vCPU cores and 6gb of RAM. the server is located in the United States (East) and your current
             average
-            ping to it is <strong id="ping">(Calculating...)ms</strong>. the server is connected through a 300mbps
+            ping to it is <strong id="ping">Calculating...</strong>. the server is connected through a 300mbps
             connection. running Rocky Linux 9.4. the server is shared with another one of my projects that is currently
             in a invite-only phase, but will be open to the public soon!~ :3 if you are curious about an more technical
             details, feel free to reach out to micr0 on fedi! uwu
@@ -125,7 +158,7 @@ to invite a friend to the server, contact micr0 with their fedi account and vouc
             function pingServer(callback) {
                 var startTime = Date.now();
 
-                fetch(window.location.href)
+                fetch('https://music.micr0.dev/api/ping')
                     .then(response => {
                         var endTime = Date.now();
                         var ping = endTime - startTime;
@@ -158,7 +191,64 @@ to invite a friend to the server, contact micr0 with their fedi account and vouc
             }
 
             measurePing();
-            // setInterval(measurePing, 5000);  // Ping the server every minute
+
+            function fetchServerInfo() {
+                fetch('https://api.mcsrvstat.us/3/mc.micr0.dev')
+                    .then(response => response.json())
+                    .then(data => {
+                        const serverStatus = document.getElementById('server-status');
+                        const serverPlayers = document.getElementById('server-players');
+                        const serverMotd = document.getElementById('server-motd');
+                        const activePlayers = document.getElementById('active-players');
+                        const serverIcon = document.getElementById('server-icon');
+
+                        if (data.online) {
+                            serverStatus.textContent = "Online";
+                            serverPlayers.textContent = `${data.players.online} / ${data.players.max}`;
+                            serverMotd.innerHTML = data.motd.html.join('<br>');
+
+                            if (data.players.list && data.players.list.length > 0) {
+                                activePlayers.innerHTML = data.players.list.map(player => player.name).join('<br>');
+                            } else {
+                                activePlayers.innerHTML = "No active players";
+                            }
+
+                            if (data.icon) {
+                                serverIcon.src = data.icon;
+                                serverIcon.style.display = "block";
+                            }
+                        } else {
+                            serverStatus.textContent = "Offline";
+                            serverPlayers.textContent = "N/A";
+                            activePlayers.innerHTML = "N/A";
+                            serverMotd.textContent = "N/A";
+                            serverIcon.style.display = "none";
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error fetching server info:', error);
+                        document.getElementById('server-status').textContent = "Error";
+                        document.getElementById('server-players').textContent = "N/A";
+                        document.getElementById('active-players').innerHTML = "N/A";
+                        document.getElementById('server-motd').textContent = "N/A";
+                    });
+            }
+
+            // Call the function immediately to fetch the data on page load
+            fetchServerInfo();
+
+            // Optionally, refresh the info every minute
+            setInterval(fetchServerInfo, 60000);
+
+            document.querySelectorAll('h2').forEach(header => {
+                header.addEventListener('click', () => {
+                    header.parentNode.scrollIntoView();
+                    const url = `${window.location.pathname}#${header.parentNode.id}`;
+                    window.location.href = url
+
+                });
+            });
+
         </script>
 </body>
 

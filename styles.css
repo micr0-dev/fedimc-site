@@ -39,6 +39,11 @@ h1 {
 h2 {
     font-family: 'Scintifica', monospace;
     font-size: 2em;
+    cursor: pointer;
+}
+
+h2:hover::after {
+    content: " #";
 }
 
 pre {
@@ -47,10 +52,22 @@ pre {
     border-radius: 5px;
     font-family: 'Scintifica', monospace;
     white-space: pre-wrap;
+    overflow-x: auto;
 }
 
 ol {
     padding-left: 20px;
+}
+
+ul {
+    padding-left: 0px;
+    list-style-type: none;
+}
+
+ul li::before {
+    content: "-";
+    margin-right: 28px;
+    color: #d3d3d3;
 }
 
 a {
@@ -60,4 +77,21 @@ a {
 
 a:hover {
     text-decoration: underline;
+}
+
+#server-info {
+    max-width: fit-content;
+    padding: 20px;
+    background-color: #000;
+    border-radius: 8px;
+}
+
+#server-info h2 {
+    margin: 0;
+    padding: 2px;
+}
+
+#server-info p {
+    margin: 0;
+    padding: 2px;
 }
