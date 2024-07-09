@@ -328,19 +328,9 @@ to invite a friend to the server, contact micr0 with their fedi account and vouc
                 ctx.lineTo(x, y);
             });
 
-            ctx.strokeStyle = '#ccc';
+            ctx.strokeStyle = '#F77';
             ctx.lineWidth = 2;
             ctx.stroke();
-
-            // Draw the points
-            ctx.fillStyle = '#F77';
-            counts.forEach((count, index) => {
-                const x = 50 + (index / (timestamps.length - 1)) * (canvas.width - 60);
-                const y = canvas.height - 40 - (count / maxCount) * (canvas.height - 50);
-                ctx.beginPath();
-                ctx.arc(x, y, 3, 0, Math.PI * 2);
-                ctx.fill();
-            });
         }
 
 
