@@ -282,46 +282,65 @@ to invite a friend to the server, contact micr0 with their fedi account and vouc
 
                 const timestamps = data.map(entry => new Date(entry.timestamp * 1000));
                 const counts = data.map(entry => entry.count);
+                const maxCount = Math.max(...counts);
 
                 // Clear the canvas
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
 
                 // Draw the axes
                 ctx.beginPath();
-                ctx.moveTo(40, 10);
-                ctx.lineTo(40, canvas.height - 40);
+                ctx.moveTo(50, 10);
+                ctx.lineTo(50, canvas.height - 40);
                 ctx.lineTo(canvas.width - 10, canvas.height - 40);
+                ctx.strokeStyle = '#d3d3d3';
+                ctx.lineWidth = 2;
                 ctx.stroke();
 
                 // Draw the labels
-                ctx.font = '10px Arial';
+                ctx.font = '12px Arial';
+                ctx.fillStyle = '#333';
                 ctx.textAlign = 'center';
                 timestamps.forEach((timestamp, index) => {
-                    const x = 40 + (index / timestamps.length) * (canvas.width - 50);
-                    const label = timestamp.getHours() + ':' + ("0" + timestamp.getMinutes()).slice(-2);
+                    const x = 50 + (index / (timestamps.length - 1)) * (canvas.width - 60);
+                    const label = `${timestamp.getHours()}:${("0" + timestamp.getMinutes()).slice(-2)}`;
                     ctx.fillText(label, x, canvas.height - 25);
                 });
 
-                counts.forEach((count, index) => {
-                    const y = canvas.height - 40 - (count / Math.max(...counts)) * (canvas.height - 50);
-                    ctx.fillText(count, 25, y + 3);
-                });
+                ctx.textAlign = 'right';
+                ctx.textBaseline = 'middle';
+                for (let i = 0; i <= maxCount; i += Math.ceil(maxCount / 10)) {
+                    const y = canvas.height - 40 - (i / maxCount) * (canvas.height - 50);
+                    ctx.fillText(i, 45, y);
+                }
 
                 // Draw the line
                 ctx.beginPath();
                 ctx.moveTo(
-                    40,
-                    canvas.height - 40 - (counts[0] / Math.max(...counts)) * (canvas.height - 50)
+                    50,
+                    canvas.height - 40 - (counts[0] / maxCount) * (canvas.height - 50)
                 );
 
                 counts.forEach((count, index) => {
-                    const x = 40 + (index / timestamps.length) * (canvas.width - 50);
-                    const y = canvas.height - 40 - (count / Math.max(...counts)) * (canvas.height - 50);
+                    const x = 50 + (index / (timestamps.length - 1)) * (canvas.width - 60);
+                    const y = canvas.height - 40 - (count / maxCount) * (canvas.height - 50);
                     ctx.lineTo(x, y);
                 });
 
+                ctx.strokeStyle = '#007bff';
+                ctx.lineWidth = 2;
                 ctx.stroke();
+
+                // Draw the points
+                ctx.fillStyle = '#007bff';
+                counts.forEach((count, index) => {
+                    const x = 50 + (index / (timestamps.length - 1)) * (canvas.width - 60);
+                    const y = canvas.height - 40 - (count / maxCount) * (canvas.height - 50);
+                    ctx.beginPath();
+                    ctx.arc(x, y, 3, 0, Math.PI * 2);
+                    ctx.fill();
+                });
             }
+
 
 
             fetchPlayerCountData();
