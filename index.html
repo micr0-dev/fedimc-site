@@ -299,10 +299,14 @@ to invite a friend to the server, contact micr0 with their fedi account and vouc
             ctx.stroke();
 
             // Draw the labels
-            ctx.font = '12px Scintifica';
+            ctx.font = '12px Arial';
             ctx.fillStyle = '#ccc';
             ctx.textAlign = 'center';
             timestamps.forEach((timestamp, index) => {
+                // Only show every xth label depending on the number of timestamps to prevent overlap
+                if (timestamps.length > 10 && index % Math.ceil(timestamps.length / 10) !== 0) {
+                    return;
+                }
                 const x = 50 + (index / (timestamps.length - 1)) * (canvas.width - 60);
                 const label = `${timestamp.getHours()}:${("0" + timestamp.getMinutes()).slice(-2)}`;
                 ctx.fillText(label, x, canvas.height - 25);
