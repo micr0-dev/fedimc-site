@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>fedimc guide</title>
     <link rel="stylesheet" href="styles.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
@@ -278,33 +277,52 @@ to invite a friend to the server, contact micr0 with their fedi account and vouc
             }
 
             function renderPlayerCountChart(data) {
-                const ctx = document.getElementById('playerCountChart').getContext('2d');
-                const timestamps = data.map(entry => new Date(entry.timestamp * 1000).toLocaleString());
+                const canvas = document.getElementById('playerCountChart');
+                const ctx = canvas.getContext('2d');
+
+                const timestamps = data.map(entry => new Date(entry.timestamp * 1000));
                 const counts = data.map(entry => entry.count);
 
-                new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: timestamps,
-                        datasets: [{
-                            label: 'Player Count',
-                            data: counts,
-                            borderColor: 'rgb(75, 192, 192)',
-                            fill: false
-                        }]
-                    },
-                    options: {
-                        scales: {
-                            x: {
-                                type: 'time',
-                                time: {
-                                    unit: 'hour'
-                                }
-                            }
-                        }
-                    }
+                // Clear the canvas
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                // Draw the axes
+                ctx.beginPath();
+                ctx.moveTo(40, 10);
+                ctx.lineTo(40, canvas.height - 40);
+                ctx.lineTo(canvas.width - 10, canvas.height - 40);
+                ctx.stroke();
+
+                // Draw the labels
+                ctx.font = '10px Arial';
+                ctx.textAlign = 'center';
+                timestamps.forEach((timestamp, index) => {
+                    const x = 40 + (index / timestamps.length) * (canvas.width - 50);
+                    const label = timestamp.getHours() + ':' + ("0" + timestamp.getMinutes()).slice(-2);
+                    ctx.fillText(label, x, canvas.height - 25);
                 });
+
+                counts.forEach((count, index) => {
+                    const y = canvas.height - 40 - (count / Math.max(...counts)) * (canvas.height - 50);
+                    ctx.fillText(count, 25, y + 3);
+                });
+
+                // Draw the line
+                ctx.beginPath();
+                ctx.moveTo(
+                    40,
+                    canvas.height - 40 - (counts[0] / Math.max(...counts)) * (canvas.height - 50)
+                );
+
+                counts.forEach((count, index) => {
+                    const x = 40 + (index / timestamps.length) * (canvas.width - 50);
+                    const y = canvas.height - 40 - (count / Math.max(...counts)) * (canvas.height - 50);
+                    ctx.lineTo(x, y);
+                });
+
+                ctx.stroke();
             }
+
 
             fetchPlayerCountData();
 
