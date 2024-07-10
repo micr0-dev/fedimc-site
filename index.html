@@ -355,11 +355,14 @@ to invite a friend to the server, contact micr0 with their fedi account and vouc
             canvases.forEach(canvas => {
                 canvas.width = window.innerWidth - 40;
             });
+            fetchPlayerCountData();
         }
 
         window.addEventListener('resize', resizeCanvas);
         resizeCanvas();
 
+        // update player count data every 1 minute
+        setInterval(fetchPlayerCountData, 60000);
     </script>
 </body>
 
