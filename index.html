@@ -321,7 +321,7 @@ to invite a friend to the server, contact micr0 with their fedi account and vouc
                 const label = showDate ?
                     `${timestamp.getDate()}/${timestamp.getMonth() + 1}` :
                     `${timestamp.getHours()}:${("0" + timestamp.getMinutes()).slice(-2)}`;
-                // ctx.fillText(label, x, canvas.height - 25);
+                ctx.fillText(label, x, canvas.height - 25);
             });
 
             ctx.textAlign = 'right';
@@ -344,7 +344,7 @@ to invite a friend to the server, contact micr0 with their fedi account and vouc
             ctx.lineWidth = 4;
             ctx.stroke();
 
-            ctx.fillText(label, canvas.width / 2, 20);
+            // ctx.fillText(label, canvas.width / 2, 20);
         }
 
         fetchPlayerCountData();
