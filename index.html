@@ -289,6 +289,17 @@ to invite a friend to the server, contact micr0 with their fedi account and vouc
                 .catch(error => console.error('Error fetching player count data:', error));
         }
 
+        function calculateMovingAverage(data, windowSize) {
+            const averages = [];
+            for (let i = 0; i < data.length; i++) {
+                const start = Math.max(0, i - windowSize + 1);
+                const window = data.slice(start, i + 1);
+                const sum = window.reduce((sum, value) => sum + value, 0);
+                averages.push(sum / window.length);
+            }
+            return averages;
+        }
+
         function renderPlayerCountChart(data, canvasId, label) {
             const canvas = document.getElementById(canvasId);
             const ctx = canvas.getContext('2d');
@@ -298,6 +309,7 @@ to invite a friend to the server, contact micr0 with their fedi account and vouc
             const timestamps = data.map(entry => new Date(entry.timestamp * 1000));
             const counts = data.map(entry => entry.count);
             const maxCount = Math.max(...counts);
+            const movingAverage = calculateMovingAverage(counts, 10); // Using a window size of 10 for the moving average
 
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -329,31 +341,26 @@ to invite a friend to the server, contact micr0 with their fedi account and vouc
                 ctx.fillText(i, 45, y);
             }
 
+            // Draw the actual line in gray
             ctx.beginPath();
             ctx.moveTo(50, canvas.height - 40 - (counts[0] / maxCount) * (canvas.height - 50));
-
             counts.forEach((count, index) => {
                 const x = 50 + (index / (timestamps.length - 1)) * (canvas.width - 60);
                 const y = canvas.height - 40 - (count / maxCount) * (canvas.height - 50);
                 ctx.lineTo(x, y);
             });
-
             ctx.strokeStyle = '#888';
             ctx.lineWidth = 2;
             ctx.stroke();
 
-            // Draw smoothed line
+            // Draw the moving average line in red
             ctx.beginPath();
-            ctx.moveTo(50, canvas.height - 40 - (counts[0] / maxCount) * (canvas.height - 50));
-
-            for (let i = 1; i < counts.length; i++) {
-                const x = 50 + (i / (timestamps.length - 1)) * (canvas.width - 60);
-                const midX = 50 + ((i - 0.5) / (timestamps.length - 1)) * (canvas.width - 60);
-                const y = canvas.height - 40 - (counts[i] / maxCount) * (canvas.height - 50);
-                const prevY = canvas.height - 40 - (counts[i - 1] / maxCount) * (canvas.height - 50);
-                ctx.quadraticCurveTo(midX, prevY, x, y);
-            }
-
+            ctx.moveTo(50, canvas.height - 40 - (movingAverage[0] / maxCount) * (canvas.height - 50));
+            movingAverage.forEach((avg, index) => {
+                const x = 50 + (index / (timestamps.length - 1)) * (canvas.width - 60);
+                const y = canvas.height - 40 - (avg / maxCount) * (canvas.height - 50);
+                ctx.lineTo(x, y);
+            });
             ctx.strokeStyle = '#F77';
             ctx.lineWidth = 2;
             ctx.stroke();
