@@ -99,7 +99,3 @@ a:hover {
 #chartAllTime {
     display: none;
 }
-
-canvas {
-    width: 100%;
-}
