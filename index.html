@@ -282,25 +282,14 @@ to invite a friend to the server, contact micr0 with their fedi account and vouc
                     const now = new Date();
                     const past24Hours = data.filter(entry => new Date(entry.timestamp * 1000) >= new Date(now.getTime() - 24 * 60 * 60 * 1000));
                     const past7Days = data.filter(entry => new Date(entry.timestamp * 1000) >= new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000));
-                    renderPlayerCountChart(past24Hours, 'chart24Hours', 'Past 24 Hours');
-                    renderPlayerCountChart(past7Days, 'chart7Days', 'Past 7 Days');
-                    renderPlayerCountChart(data, 'chartAllTime', 'All Time');
+                    renderPlayerCountChart(past24Hours, 'chart24Hours', 'Past 24 Hours', false);
+                    renderPlayerCountChart(past7Days, 'chart7Days', 'Past 7 Days', true);
+                    renderPlayerCountChart(data, 'chartAllTime', 'All Time', true);
                 })
                 .catch(error => console.error('Error fetching player count data:', error));
         }
 
-        function calculateMovingAverage(data, windowSize) {
-            const averages = [];
-            for (let i = 0; i < data.length; i++) {
-                const start = Math.max(0, i - windowSize + 1);
-                const window = data.slice(start, i + 1);
-                const sum = window.reduce((sum, value) => sum + value, 0);
-                averages.push(sum / window.length);
-            }
-            return averages;
-        }
-
-        function renderPlayerCountChart(data, canvasId, label) {
+        function renderPlayerCountChart(data, canvasId, label, showDate) {
             const canvas = document.getElementById(canvasId);
             const ctx = canvas.getContext('2d');
 
@@ -309,7 +298,6 @@ to invite a friend to the server, contact micr0 with their fedi account and vouc
             const timestamps = data.map(entry => new Date(entry.timestamp * 1000));
             const counts = data.map(entry => entry.count);
             const maxCount = Math.max(...counts);
-            const movingAverage = calculateMovingAverage(counts, 10); // Using a window size of 10 for the moving average
 
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -330,7 +318,9 @@ to invite a friend to the server, contact micr0 with their fedi account and vouc
                     return;
                 }
                 const x = 50 + (index / (timestamps.length - 1)) * (canvas.width - 60);
-                const label = timestamps.length <= 24 ? `${timestamp.getHours()}:${("0" + timestamp.getMinutes()).slice(-2)}` : `${timestamp.getDate()}/${timestamp.getMonth() + 1}`;
+                const label = showDate ?
+                    `${timestamp.getDate()}/${timestamp.getMonth() + 1}` :
+                    `${timestamp.getHours()}:${("0" + timestamp.getMinutes()).slice(-2)}`;
                 ctx.fillText(label, x, canvas.height - 25);
             });
 
@@ -341,27 +331,16 @@ to invite a friend to the server, contact micr0 with their fedi account and vouc
                 ctx.fillText(i, 45, y);
             }
 
-            // Draw the actual line in gray
             ctx.beginPath();
             ctx.moveTo(50, canvas.height - 40 - (counts[0] / maxCount) * (canvas.height - 50));
+
             counts.forEach((count, index) => {
                 const x = 50 + (index / (timestamps.length - 1)) * (canvas.width - 60);
                 const y = canvas.height - 40 - (count / maxCount) * (canvas.height - 50);
                 ctx.lineTo(x, y);
             });
-            ctx.strokeStyle = '#888';
-            ctx.lineWidth = 2;
-            ctx.stroke();
 
-            // Draw the moving average line in red
-            ctx.beginPath();
-            ctx.moveTo(50, canvas.height - 40 - (movingAverage[0] / maxCount) * (canvas.height - 50));
-            movingAverage.forEach((avg, index) => {
-                const x = 50 + (index / (timestamps.length - 1)) * (canvas.width - 60);
-                const y = canvas.height - 40 - (avg / maxCount) * (canvas.height - 50);
-                ctx.lineTo(x, y);
-            });
-            ctx.strokeStyle = '#F77';
+            ctx.strokeStyle = '#888';
             ctx.lineWidth = 2;
             ctx.stroke();
 
@@ -369,6 +348,7 @@ to invite a friend to the server, contact micr0 with their fedi account and vouc
         }
 
         fetchPlayerCountData();
+
 
     </script>
 </body>
