@@ -170,11 +170,11 @@ to invite a friend to the server, contact micr0 with their fedi account and vouc
     <section id="player-count-graph">
         <h2>Player Count Over Time</h2>
         <h3>24 Hours</h3>
-        <canvas id="chart24Hours" width="100%" height="400"></canvas>
+        <canvas id="chart24Hours" height="400"></canvas>
         <h3>7 Days</h3>
-        <canvas id="chart7Days" width="100%" height="400"></canvas>
+        <canvas id="chart7Days" height="400"></canvas>
         <h3>All Time</h3>
-        <canvas id="chartAllTime" width="100%" height="400"></canvas>
+        <canvas id="chartAllTime" height="400"></canvas>
     </section>
 
     <footer>
@@ -349,6 +349,16 @@ to invite a friend to the server, contact micr0 with their fedi account and vouc
 
         fetchPlayerCountData();
 
+        const canvases = document.querySelectorAll('canvas');
+
+        function resizeCanvas() {
+            canvases.forEach(canvas => {
+                canvas.width = window.innerWidth;
+            });
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
 
     </script>
 </body>
